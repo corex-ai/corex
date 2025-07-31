@@ -19,8 +19,8 @@ def signal():
     if len(price_data) < 2:
         return jsonify({"error": "Need at least 2 prices"}), 400
 
-    signal = generate_signal(price_data)
-    return jsonify({"signal": signal})
+        result = generate_signal(price_data)
+    return jsonify(result)
 
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))
