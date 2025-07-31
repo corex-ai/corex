@@ -1,6 +1,6 @@
 from flask import Flask, jsonify, request
 import os
-from signal_engine.signal_engine import generate_signal
+from signal_engine import generate_signal
 
 app = Flask(__name__)
 
