@@ -13,13 +13,19 @@ def signal():
     data = request.get_json()
     price_data = data.get('price_data')
 
+    # ✅ Debugging line to print input data to logs
+    print("📊 Received price_data:", price_data)
+
+    # ✅ Auto fallback if nothing received
     if not price_data:
         price_data = [100, 102, 101, 103, 104, 105, 106, 105, 104, 102, 101, 100, 98, 97, 96]
 
     if len(price_data) < 2:
         return jsonify({"error": "Need at least 2 prices"}), 400
 
-        result = generate_signal(price_data)
+    # ✅ Generate signal
+    result = generate_signal(price_data)
+
     return jsonify(result)
 
 if __name__ == '__main__':
