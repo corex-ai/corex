@@ -1,8 +1,8 @@
 import requests
 
-def fetch_price_data():
+def fetch_price_data(symbol="bitcoin"):
     try:
-        url = "https://api.coingecko.com/api/v3/coins/bitcoin/market_chart"
+        url = f"https://api.coingecko.com/api/v3/coins/{symbol}/market_chart"
         params = {
             "vs_currency": "usd",
             "days": "1",
@@ -13,11 +13,11 @@ def fetch_price_data():
         data = response.json()
 
         prices = data.get("prices", [])
-        price_data = [round(p[1], 2) for p in prices[-100:] if p]  # Last 100 prices
+        price_data = [round(p[1], 2) for p in prices[-100:] if p]
         return price_data if price_data else fallback_prices()
 
     except Exception as e:
-        print(f"⚠️ Error fetching live price: {e}")
+        print(f"⚠️ Error fetching price for {symbol}: {e}")
         return fallback_prices()
 
 def fallback_prices():
