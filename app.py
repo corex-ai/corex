@@ -14,6 +14,7 @@ def home():
 def signal():
     data = request.get_json()
     price_data = data.get('price_data', [])
+    logger.info(f"📥 Incoming price data: {price_data}")
     
     if not price_data or len(price_data) < 2:
         return jsonify({"error": "Need at least 2 prices"}), 400
