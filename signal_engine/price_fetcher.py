@@ -1,3 +1,4 @@
+from logger import logger
 import requests
 
 def fetch_price_data(symbol="bitcoin"):
@@ -17,7 +18,7 @@ def fetch_price_data(symbol="bitcoin"):
         return price_data if price_data else fallback_prices()
 
     except Exception as e:
-        print(f"⚠️ Error fetching price for {symbol}: {e}")
+        logger.error(f"❌ Error fetching price for {symbol}: {e}")
         return fallback_prices()
 
 def fallback_prices():
