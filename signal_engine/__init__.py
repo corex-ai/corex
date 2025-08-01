@@ -1,3 +1,4 @@
+from logger import logger
 from .indicators import sma, ema, rsi  # ✅ Yeh top line hai
 
 def generate_signal(price_data):
@@ -25,7 +26,8 @@ def generate_signal(price_data):
     if rsi_value < 30 and price_data[-1] > ema_value:
         explanation = f"RSI is {rsi_value} (oversold) and price is above EMA ({ema_value})"
         confidence += 0.2
-        return {
+        logger.info(f"Signal: BUY | Confidence: {round(confidence,2)} | Reason: {explanation}")
+return {
             "signal": "BUY",
             "confidence": round(confidence, 2),
             "explanation": explanation
