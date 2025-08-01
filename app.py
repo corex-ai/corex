@@ -1,3 +1,4 @@
+from logger import logger
 from flask import Flask, jsonify, request
 import os
 from signal_engine import generate_signal
