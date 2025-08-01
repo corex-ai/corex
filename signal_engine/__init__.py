@@ -1,5 +1,5 @@
 from logger import logger
-from .indicators import sma, ema, rsi  # ✅ Yeh top line hai
+from .indicators import sma, ema, rsi  # Yeh top line hai
 
 def generate_signal(price_data):
     if len(price_data) < 15:
@@ -26,8 +26,8 @@ def generate_signal(price_data):
     if rsi_value < 30 and price_data[-1] > ema_value:
         explanation = f"RSI is {rsi_value} (oversold) and price is above EMA ({ema_value})"
         confidence += 0.2
-        logger.info(f"Signal: BUY | Confidence: {round(confidence,2)} | Reason: {explanation}")
-return {
+        logger.info(f"Signal: BUY | Confidence: {round(confidence, 2)} | Reason: {explanation}")
+        return {
             "signal": "BUY",
             "confidence": round(confidence, 2),
             "explanation": explanation
@@ -36,6 +36,7 @@ return {
     elif rsi_value > 70 and price_data[-1] < ema_value:
         explanation = f"RSI is {rsi_value} (overbought) and price is below EMA ({ema_value})"
         confidence += 0.2
+        logger.info(f"Signal: SELL | Confidence: {round(confidence, 2)} | Reason: {explanation}")
         return {
             "signal": "SELL",
             "confidence": round(confidence, 2),
@@ -44,6 +45,7 @@ return {
 
     else:
         explanation = f"RSI is {rsi_value}, price near EMA ({ema_value}), no clear signal"
+        logger.info(f"Signal: HOLD | Confidence: {round(confidence, 2)} | Reason: {explanation}")
         return {
             "signal": "HOLD",
             "confidence": round(confidence, 2),
