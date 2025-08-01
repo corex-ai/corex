@@ -1,31 +1,35 @@
-from logger import logger
 from flask import Flask, jsonify, request
 import os
 from signal_engine import generate_signal
 from signal_engine.price_fetcher import fetch_price_data
+from logger import logger
 
 app = Flask(__name__)
 
 @app.route('/')
 def home():
-    return '🚀 CoreX AI Trading System is live and running!'
+    return "🚀 CoreX AI Trading System is live and running!"
 
 @app.route('/signal', methods=['POST'])
 def signal():
     data = request.get_json()
     price_data = data.get('price_data', [])
+
     logger.info(f"📥 Incoming price data: {price_data}")
-    
+
     if not price_data or len(price_data) < 2:
         return jsonify({"error": "Need at least 2 prices"}), 400
-    
+
     result = generate_signal(price_data)
+
+    logger.info(f"📤 Final signal response: {result}")
+
     return jsonify(result)
 
 @app.route('/live_signal', methods=['GET'])
 def live_signal():
-    price_data = fetch_price_data()  # 🔁 Get dummy data
-    result = generate_signal(price_data)  # 🧠 Run signal logic
+    price_data = fetch_price_data()  # Get dummy or live data
+    result = generate_signal(price_data)
     return jsonify(result)
 
 if __name__ == '__main__':
