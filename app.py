@@ -2,6 +2,7 @@ from flask import Flask, jsonify, request
 import os
 from signal_engine import generate_signal
 from signal_engine.price_fetcher import fetch_price_data
+from ai_model.trainer import train_model  # ✅ Naya import
 from logger import logger
 
 app = Flask(__name__)
@@ -28,9 +29,19 @@ def signal():
 
 @app.route('/live_signal', methods=['GET'])
 def live_signal():
-    price_data = fetch_price_data()  # Get dummy or live data
+    price_data = fetch_price_data()
     result = generate_signal(price_data)
     return jsonify(result)
+
+# ✅ Naya AI Model Train Route
+@app.route('/train_model', methods=['GET'])
+def trigger_training():
+    try:
+        train_model()
+        return jsonify({"message": "✅ AI Model trained successfully."})
+    except Exception as e:
+        logger.error(f"❌ Training error: {e}")
+        return jsonify({"error": str(e)}), 500
 
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))
