@@ -1,28 +1,15 @@
 import pandas as pd
-from sklearn.tree import DecisionTreeClassifier
-import pickle
-import os
+from sklearn.ensemble import RandomForestClassifier
+from joblib import dump
+from logger import logger
 
 def train_model():
-    # Load training data
-    data_path = os.path.join(os.path.dirname(__file__), '../training_data.csv')
-    df = pd.read_csv(data_path)
+    df = pd.read_csv("training_data.csv")
+    X = df.drop("signal", axis=1)
+    y = df["signal"]
 
-    # Features = price1 to price5
-    X = df[['price1', 'price2', 'price3', 'price4', 'price5']]
-    y = df['signal']
-
-    # Train model
-    model = DecisionTreeClassifier()
+    model = RandomForestClassifier()
     model.fit(X, y)
 
-    # Save model
-    model_path = os.path.join(os.path.dirname(__file__), 'trained_model.pkl')
-    with open(model_path, 'wb') as f:
-        pickle.dump(model, f)
-
-    print("✅ AI Model Trained and Saved Successfully!")
-
-# Run if executed directly
-if __name__ == "__main__":
-    train_model()
+    dump(model, "corex_model.joblib")
+    logger.info("✅ Model trained and saved successfully.")
