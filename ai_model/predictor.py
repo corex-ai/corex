@@ -1,14 +1,8 @@
-import pickle
-import os
+from joblib import load
+from logger import logger
 
-def predict_signal(prices):
-    # trained_model.pkl ka path
-    model_path = os.path.join(os.path.dirname(__file__), 'trained_model.pkl')
-
-    # Model load karo
-    with open(model_path, 'rb') as f:
-        model = pickle.load(f)
-
-    # Predict karo
-    prediction = model.predict([prices])
+def predict_signal(price_data):
+    model = load("corex_model.joblib")
+    prediction = model.predict([price_data])
+    logger.info(f"AI Prediction done for input: {price_data}")
     return prediction[0]
