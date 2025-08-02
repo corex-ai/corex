@@ -1,48 +1,48 @@
 from flask import Flask, jsonify, request
-import os
 from signal_engine import generate_signal
-from signal_engine.price_fetcher import fetch_price_data
-from ai_model.trainer import train_model  # ✅ Naya import
+from ai_model.trainer import train_model
+from ai_model.predictor import predict_signal
 from logger import logger
 
 app = Flask(__name__)
 
 @app.route('/')
 def home():
-    return "🚀 CoreX AI Trading System is live and running!"
+    return jsonify({"message": "✅ CoreX Signal Engine running!"})
 
 @app.route('/signal', methods=['POST'])
 def signal():
     data = request.get_json()
-    price_data = data.get('price_data', [])
+    price_data = data.get("price_data", [])
 
-    logger.info(f"📥 Incoming price data: {price_data}")
+    signal_result = generate_signal(price_data)
+    return jsonify(signal_result)
 
-    if not price_data or len(price_data) < 2:
-        return jsonify({"error": "Need at least 2 prices"}), 400
-
-    result = generate_signal(price_data)
-
-    logger.info(f"📤 Final signal response: {result}")
-
-    return jsonify(result)
-
-@app.route('/live_signal', methods=['GET'])
-def live_signal():
-    price_data = fetch_price_data()
-    result = generate_signal(price_data)
-    return jsonify(result)
-
-# ✅ Naya AI Model Train Route
-@app.route('/train_model', methods=['GET'])
-def trigger_training():
+@app.route('/train_model')
+def train():
     try:
         train_model()
         return jsonify({"message": "✅ AI Model trained successfully."})
     except Exception as e:
-        logger.error(f"❌ Training error: {e}")
+        logger.error(f"❌ Training failed: {e}")
+        return jsonify({"error": str(e)}), 500
+
+@app.route('/ai_signal', methods=['POST'])
+def ai_signal():
+    data = request.get_json()
+    price_data = data.get("price_data", [])
+
+    if not price_data or len(price_data) < 5:
+        return jsonify({"error": "Need at least 5 prices"}), 400
+
+    try:
+        prediction = predict_signal(price_data)
+        return jsonify({
+            "ai_signal": prediction
+        })
+    except Exception as e:
+        logger.error(f"❌ AI prediction failed: {e}")
         return jsonify({"error": str(e)}), 500
 
 if __name__ == '__main__':
-    port = int(os.environ.get('PORT', 5000))
-    app.run(host='0.0.0.0', port=port)
+    app.run(debug=True)
