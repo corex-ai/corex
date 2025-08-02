@@ -14,7 +14,6 @@ def home():
 def signal():
     data = request.get_json()
     price_data = data.get("price_data", [])
-
     signal_result = generate_signal(price_data)
     return jsonify(signal_result)
 
@@ -22,10 +21,10 @@ def signal():
 def train():
     try:
         train_model()
-        return jsonify({"message": "✅ AI Model trained successfully."})
-    except Exception as e:
-        logger.error(f"❌ Training failed: {e}")
-        return jsonify({"error": str(e)}), 500
+        return jsonify({"message": "🧠 AI Model trained successfully."})
+    except Exception as ex:
+        logger.error(f"❌ Training failed: {ex}")
+        return jsonify({"error": str(ex)}), 500
 
 @app.route('/ai_signal', methods=['POST'])
 def ai_signal():
@@ -40,8 +39,10 @@ def ai_signal():
         return jsonify({
             "ai_signal": prediction
         })
-    except Exception as e:
-        logger.error(f"❌ AI prediction failed: {e}")
-        return jsonify({"error": str(e)}), 500
-if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000)
+    except Exception as ex:
+        logger.error(f"❌ AI prediction failed: {ex}")
+        return jsonify({"error": str(ex)}), 500
+
+if __name__ == "__main__":
+    from waitress import serve
+    serve(app, host="0.0.0.0", port=5000)
