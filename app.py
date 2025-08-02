@@ -8,9 +8,9 @@ app = Flask(__name__)
 
 @app.route('/')
 def home():
-    return jsonify({"message": "✅ CoreX Signal Engine running!"})
+    return jsonify({"message": "🟢 CoreX Signal Engine running!"})
 
-@app.route('/signal', methods=["POST"])
+@app.route('/signal', methods=['POST'])
 def signal():
     data = request.get_json()
     price_data = data.get("price_data", [])
@@ -26,7 +26,7 @@ def train():
         logger.error(f"❌ Training failed: {ex}")
         return jsonify({"error": str(ex)}), 500
 
-@app.route('/ai_signal', methods=["POST"])
+@app.route('/ai_signal', methods=['POST'])
 def ai_signal():
     data = request.get_json()
     price_data = data.get("price_data", [])
@@ -41,7 +41,7 @@ def ai_signal():
         logger.error(f"❌ AI prediction failed: {ex}")
         return jsonify({"error": str(ex)}), 500
 
-# 🚀 Final production server using waitress
+# Final production server using waitress
 if __name__ == "__main__":
     from waitress import serve
     serve(app, host="0.0.0.0", port=5000)
