@@ -1,30 +1,13 @@
-def sma(data, period=5):
-    if len(data) < period:
-        return None
-    return sum(data[-period:]) / period
+def calculate_indicators(price_data):
+    if not price_data or len(price_data) < 3:
+        return {"signal": "HOLD", "confidence": 0.0, "explanation": "Not enough data."}
 
-def ema(data, period=5):
-    if len(data) < period:
-        return None
-    k = 2 / (period + 1)
-    ema_val = data[0]
-    for price in data[1:]:
-        ema_val = (price * k) + (ema_val * (1 - k))
-    return ema_val
+    sma = sum(price_data[-3:]) / 3
+    last_price = price_data[-1]
 
-def rsi(data, period=14):
-    if len(data) < period + 1:
-        return None
-    gains, losses = [], []
-    for i in range(1, period + 1):
-        diff = data[-i] - data[-i - 1]
-        if diff >= 0:
-            gains.append(diff)
-        else:
-            losses.append(abs(diff))
-    avg_gain = sum(gains) / period
-    avg_loss = sum(losses) / period
-    if avg_loss == 0:
-        return 100
-    rs = avg_gain / avg_loss
-    return 100 - (100 / (1 + rs))
+    if last_price > sma:
+        return {"signal": "BUY", "confidence": 0.7, "explanation": f"Price ({last_price}) > SMA ({sma})"}
+    elif last_price < sma:
+        return {"signal": "SELL", "confidence": 0.7, "explanation": f"Price ({last_price}) < SMA ({sma})"}
+    else:
+        return {"signal": "HOLD", "confidence": 0.5, "explanation": "Price equals SMA"}
